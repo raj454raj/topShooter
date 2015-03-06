@@ -1,0 +1,12 @@
+CONTROLS
+********
+'a': ACW rotation of pointer
+'c': CW rotation of pointer
+'Up' arrow key: Increase power of stroke
+'Down' arrow key: Decrease power of stroke
+'Space': Strike the top
+'1': Player View
+'2': Top View
+'3': Overhead View
+'4': Helicopter Cam
+'5': Follow Cam

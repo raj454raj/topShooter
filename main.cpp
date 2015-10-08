@@ -40,6 +40,7 @@
 #define PI 3.14159265
 
 using namespace std;
+
 float theta = 0;
 // Camera direction
 float lx = 0.0, ly = 1.0; // camera points initially along y-axis
@@ -49,8 +50,6 @@ float deltaAngle = 0.0; // additional angle change when dragging
 // Mouse drag control
 int isDragging = 0; // true when dragging
 int xDragStart = 0; // records the x-coordinate when dragging starts
-
-
 
 //Represents a terrain, by storing a set of heights and normals at 2D locations
 class Terrain {
@@ -264,30 +263,31 @@ Top::Top() {
 void Top::drawTop() {
 
     y = _terrain->getHeight(x, z);
+
     glPushMatrix();
     glTranslatef(x, y, z);
     Vec3f N = _terrain->getNormal(x, z);
     float rotation_angle = acos(N[1] / (sqrt(N[0] * N[0] + N[1] * N[1] + N[2] * N[2])));
     glRotatef(-rotation_angle / PI * 180,
-            -N[2] / (sqrt(N[0] * N[0] + N[1] * N[1] + N[2] * N[2])),
-            0,
-            N[0] / (sqrt(N[0] * N[0] + N[1] * N[1] + N[2] * N[2])));
+              -N[2] / (sqrt(N[0] * N[0] + N[1] * N[1] + N[2] * N[2])),
+              0,
+              N[0] / (sqrt(N[0] * N[0] + N[1] * N[1] + N[2] * N[2])));
     glTranslatef(0, 4.5, 0);
     glRotatef(theta, 0, 1, 0);
     glRotatef(90, 1, 0, 0);
     glColor3f(0.0, 0.0, 0.0);
     glScalef(5.0, 5.0, 5.0);
+
     glPushMatrix();
     glutSolidTorus(0.2, 0.5 , 25 , 30);
-
     GLUquadricObj *quadratic;
     quadratic = gluNewQuadric();
     glColor3f(1.0, 1.0, 1.0);
     gluCylinder(quadratic,0.70f,0.001f,0.9f,32,32);
     glTranslatef(0.0, 0.0, -0.5);
     gluCylinder(quadratic,0.001f,0.55f,0.3f,32,32);
-
     glPopMatrix();
+
     glPopMatrix();
 
 }
@@ -424,12 +424,11 @@ void topupdate(int val) {
         tmptheta = -atan(T.velz / T.velx) * 180 / PI;
         if(T.velx < 0)
             acceleration = -acceleration;
-        //cout << T.velx <<"accx" << acceleration << endl;
         T.velx = T.velx + acceleration * cos(tmptheta * PI / 180) * 10;
+
         acceleration = -0.0005;
         if(T.velz < 0)
             acceleration = -acceleration;
-        //cout << T.velz << "accz" << acceleration << endl;
         T.velz = T.velz + acceleration * sin(tmptheta * PI / 180) * 10;
     }
 
@@ -518,12 +517,6 @@ void handleKeypress(unsigned char key, int x, int y) {
             T.velx = E.power * speed / sqrt(1 + m * m); 
             T.velz = E.power * speed * m / sqrt(1 + m * m); 
             T.fired = 1;
-            /*
-            if((tmptheta < 0 && E.pointerZ > 0) || (tmptheta > 0 && E.pointerZ < 0)) {
-                T.velx = -T.velx;
-                T.velz = -T.velz;
-            }
-            */
             glutTimerFunc(10, topupdate, 0);
             break;
         case 27: //Escape key
@@ -576,22 +569,31 @@ void drawScene() {
     glLoadIdentity();
 
     int tmpcam = T.getCameraPosition();
+    float div = 11;
     switch(tmpcam) {
         case 1:
             glTranslatef(0, 0, -10);
             glRotatef(30, 1.0f, 0.0f, 0.0f);
             break;
         case 2:
-
             gluLookAt(T.x / 5, T.y / 5, T.z / 5,
-                    0, 0, 0,
-                    //E.getTargetX() / 5-10, E.getTargetY() / 5 , E.getTargetZ() / 5,
-                    0, 1, 0);
+                      0, 0, 0,
+                      //E.getTargetX() / 5-10, E.getTargetY() / 5 , E.getTargetZ() / 5,
+                      0, 1, 0);
             break;
         case 3:
             gluLookAt(0.4, 10, 0.4,
-                    0.3, 0, 0.3,
-                    0, 1, 0);
+                      0.3, 0, 0.3,
+                      0, 1, 0);
+            break;
+        case 4:
+            glTranslatef(0, 0, -10);
+            glRotatef(30, 1.0f, 0.0f, 0.0f);
+            break;
+        case 5:
+            gluLookAt(T.x / div - 3.9, T.y / div + 1.5, T.z / div + 2.85,
+                      T.x / div , T.y / div, T.z / div - 1.4,
+                      0, 1, 0);
             break;
         default:
             break;
